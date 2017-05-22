@@ -1,0 +1,6 @@
+.idea/
+*.DS_Store
+../.idea/
+../destinyfinder/
+../dragonfly/
+../global-legacy/
