@@ -4,14 +4,8 @@ This project has code samples for a Job Matching Feature I developed from scratc
 Even though it is not a Ruby on Rails (RoR) project, I have structured the folders to match an RoR project and have included
 the following types of files:
 
-Models
-Views (both user and admin)
-Controllers (both user and admin)
-Mailers
-Specs (model tests and factories)
-Database migrations
-rake tasks
-routes file
+Models, Views (both user and admin), Controllers (both user and admin), Mailers. Specs (model tests and factories),
+Database migrations, rake tasks and routes file
 
 This project uses erb for the views, but I have worked on multiple projects that use haml.
 
