@@ -1,0 +1,15 @@
+<% title @job_fee.title %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:parent_url => admin_job_fees_path, :parent_text => "Job Fees", :child_text => @title) %>
+
+<div id="section_head"><div class="pad">
+
+  <div class="actionbar">
+    <% if can? :update, @job_fee %><%= link_to 'Edit', edit_admin_job_fee_path(@job_fee), :class => 'btn' %><% end %>
+    <% if can? :destroy, @job_fee %><%= link_to 'Delete', admin_job_fee_path(@job_fee), :confirm => 'Are you sure?', :method => :delete, :class => 'btn delete small' %><% end %>
+  </div>
+
+  <h1><%= @title %></h1>
+
+</div></div>

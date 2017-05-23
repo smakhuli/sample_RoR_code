@@ -1,0 +1,46 @@
+<% title "#{params[:year]} Total Payments for Job Postings" %>
+<% selected_nav "job_posting" %>
+
+<%= render :partial => "admin/job_reports/tabs", :locals => { :tab => "totals" } %>
+
+<div id="content"><div class="pad">
+
+  <table>
+
+    <tr>
+      <th class="nowrap">Total Non-Staff Registered</th>
+      <th class="nowrap">Total Staff Registered</th>
+      <th class="nowrap">Total Registered</th>
+      <th class="nowrap">Total Paid</th>
+    </tr>
+
+    <tr>
+        <td><%= @total_registered %></td>
+        <td><%= @total_staff_registered %></td>
+        <td><%= @total_registered + @total_staff_registered %></td>
+        <td><%= number_to_currency(@total_paid, :unit => "$") %></td>
+    </tr>
+
+    <tr class="totals">
+      <td class="bold"><%= @total_registered %></td>
+      <td class="bold"><%= @total_staff_registered %></td>
+      <td class="bold"><%= @total_registered + @total_staff_registered %></td>
+      <td class="bold"><%= number_to_currency(@total_paid, :unit => "$") %></td>
+    </tr>
+  </table>
+
+  <table>
+
+    <tr>
+      <td><h2>Job Registration Monthly Totals</h2></td>
+    </tr>
+
+    <% @months.each_with_index do |month, index| %>
+      <tr>
+        <td><strong><%= month %></strong>: <%= number_to_currency(JobRegistration.total_paid_monthly(@year, index+1), :unit => "$") %></td>
+      </tr>
+    <% end %>
+
+  </table>
+
+</div></div>

@@ -1,0 +1,6 @@
+<%= simple_form_for([:admin, @job_posting]) do |f| %>
+    <%= render "errors/list", object: f.object %>
+    <%= f.input :title %>
+    <%= f.input :church_url %>
+    <%= f.button :wrapped, 'Save', class: "add" %>
+<% end %>

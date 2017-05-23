@@ -1,4 +1,4 @@
-job_posting_spec.rbrequire 'spec_helper'
+require 'spec_helper'
 
 describe JobSphereship do
 

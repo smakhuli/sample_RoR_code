@@ -1,0 +1,89 @@
+<% title @job_posting.title %>
+<% selected_nav "job_posting" %>
+
+<%= render :partial => "admin/job_reports/tabs", :locals => { :tab => "job_postings" } %>
+
+<div id="content"><div class="pad">
+
+  <table>
+
+    <tr>
+      <td> <h2>Job Title: <%= @title %></h2></td>
+    </tr>
+
+    <% if @job_posting.try(:job_location).present? %>
+      <tr>
+        <td><strong>Location: </strong><%= @job_posting.job_location %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.job_spheres.any? %>
+      <tr>
+        <td><strong>Categories: </strong></td>
+      </tr>
+      <% @job_posting.job_spheres.each do |job_sphere| %>
+        <% if job_sphere.try(:name).present? %>
+          <tr>
+            <td><%= job_sphere.name %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <tr>
+      <td><strong>Created: </strong><%= @job_posting.created_at.strftime('%b %d, %Y %l:%M %P') %></td>
+    </tr>
+
+    <% if @job_posting.try(:church_name).present? %>
+      <tr>
+        <td><strong>Church Name: </strong><%= @job_posting.church_name %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:church_url).present? %>
+      <tr>
+        <td><strong>Church Url: </strong><%= @job_posting.church_url %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:job_type).present? %>
+      <tr>
+        <td><strong>Job Type: </strong><%= @job_posting.job_type %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:hours_per_week).present? %>
+      <tr>
+        <td><strong>Hours Per Week: </strong><%= @job_posting.hours_per_week %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:job_description).present? %>
+      <tr>
+        <td><strong>Job Description: </strong><%= raw(@job_posting.job_description) %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:job_requirements).present? %>
+      <tr>
+        <td><strong>Job Requirements: </strong><%= raw(@job_posting.job_requirements) %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:job_nice_to_haves).present? %>
+      <tr>
+        <td><strong>Highly Desired: </strong><%= raw(@job_posting.job_nice_to_haves) %></td>
+      </tr>
+    <% end %>
+
+    <% if @job_posting.try(:reports_to).present? %>
+      <tr>
+        <td><strong>Reports To: </strong><%= raw(@job_posting.reports_to) %></td>
+      </tr>
+    <% end %>
+
+
+  </table>
+
+</div>
+</div>

@@ -1,0 +1,49 @@
+<% title "Job Posting Fees" %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:child_text => @title) %>
+
+<div id="section_head" class="index"><div class="pad">
+
+  <div class="actionbar">
+    <% if can? :create, JobFee %><%= link_to 'New', new_admin_job_fee_path, :class => 'btn add'%><% end %>
+  </div>
+
+  <h1><%= @title %></h1>
+
+</div></div>
+
+<div id="content"><div class="pad">
+
+  <% if @job_fees.any? %>
+
+    <table>
+      <tr>
+        <th class="nowrap">Number of Months</th>
+        <th class="nowrap">Fee</th>
+        <th></th>
+        <th></th>
+      </tr>
+
+      <% @job_fees.each do |job_fee| %>
+          <tr>
+            <td class="bold"><%= link_to job_fee.number_of_months, admin_job_fee_path(job_fee) %></td>
+            <td class="bold"><%= job_fee.fee.to_currency %></td>
+            <td>
+              <% if can? :update, JobFee %><%= link_to 'Edit', edit_admin_job_fee_path(job_fee), :class => 'btn small' %><% end %>
+            </td>
+            <td>
+              <% if can? :destroy, JobFee %><%= link_to 'Delete', admin_job_fee_path(job_fee), :confirm => 'Are you sure?', :method => :delete, :class => 'btn delete small' %><% end %>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+  <% else %>
+      <table>
+        <tr>
+          <th class="nowrap">No Job Fees have been created</th>
+        </tr>
+      </table>
+  <% end %>
+
+</div></div>

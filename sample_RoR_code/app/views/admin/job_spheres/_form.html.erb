@@ -1,0 +1,5 @@
+edit.html.erb<%= simple_form_for([:admin, @job_sphere]) do |f| %>
+    <%= render "errors/list", object: f.object %>
+    <%= f.input :name %>
+    <%= f.button :wrapped, 'Save', class: "add" %>
+<% end %>

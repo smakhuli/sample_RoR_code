@@ -1,0 +1,14 @@
+<% title "New Job Fee" %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:parent_url => admin_job_fees_path, :parent_text => "Job Fees", :child_text => @title) %>
+
+<div id="section_head" class="index"><div class="pad">
+  <h1><%= @title %></h1>
+</div></div>
+
+<div id="content"><div class="pad">
+
+  <%= render 'form' %>
+
+</div></div>

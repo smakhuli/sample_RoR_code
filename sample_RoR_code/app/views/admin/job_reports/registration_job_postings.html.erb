@@ -1,0 +1,54 @@
+<% title "#{params[:year]} Job Postings" %>
+<% selected_nav "job_posting" %>
+
+<%= render :partial => "admin/job_reports/tabs", :locals => { :tab => "job_postings" } %>
+
+<div id="content"><div class="pad">
+
+  <table>
+
+    <tr>
+      <th class="nowrap">Title</th>
+      <th class="nowrap">Id</th>
+      <th class="nowrap">Reg. Id</th>
+      <th class="nowrap">Start Date</th>
+      <th class="nowrap">End Date</th>
+      <th class="nowrap">Expired</th>
+      <th class="nowrap">Church Name</th>
+      <th class="nowrap">Church Url</th>
+      <th class="nowrap">Owner ID</th>
+      <th class="nowrap"># Expressed</th>
+      <th class="nowrap"># Contacted</th>
+      <th class="nowrap"># Hired</th>
+      <th class="nowrap"># of Interests</th>
+    </tr>
+
+    <% @job_postings.each do |job_posting| %>
+      <tr>
+        <td><%= link_to job_posting.title, admin_job_posting_path(job_posting) %></td>
+        <td><%= job_posting.id %></td>
+        <td><%= job_posting.job_registration.id %></td>
+        <td><%= job_posting.job_registration.start_date.strftime('%b %d, %Y') %></td>
+        <td><%= job_posting.job_registration.end_date.strftime('%b %d, %Y') %></td>
+        <% if job_posting.expired? %>
+            <td>Yes</td>
+        <% else %>
+            <td>No</td>
+        <% end %>
+        <td><%= job_posting.church_name %></td>
+        <td><%= link_to job_posting.church_url, "#{job_posting.church_url}" %></td>
+        <% if User.find_by_id(job_posting.employer_id).nil? %>
+            <td><%= job_posting.employer_id %></td>
+        <% else %>
+            <td><%= link_to job_posting.employer_id, admin_user_path(User.find_by_id(job_posting.employer_id)) %></td>
+        <% end %>
+        <td><%= job_posting.expressed_interest.count %></td>
+        <td><%= job_posting.contacted.count %></td>
+        <td><%= job_posting.hired.count %></td>
+        <td><%= job_posting.job_interests.count %></td>
+      </tr>
+    <% end %>
+
+  </table>
+
+</div></div>

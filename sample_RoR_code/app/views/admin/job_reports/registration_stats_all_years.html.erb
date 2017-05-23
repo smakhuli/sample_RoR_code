@@ -1,0 +1,87 @@
+<% title "#{params[:year]} Stats for All Years" %>
+<% selected_nav "job_posting" %>
+
+<%= render :partial => "admin/job_reports/tabs", :locals => { :tab => "stats_all_years" } %>
+
+<div id="content"><div class="pad">
+
+  <table>
+
+    <tr>
+      <td><h2>Job Registration Totals</h2></td>
+    </tr>
+
+    <% @years.each_with_index do |year, index| %>
+        <tr>
+          <td><strong><%= year.to_s %></strong>: <%= number_to_currency(@result_by_year[index], :unit => "$") %></td>
+        </tr>
+        <tr>
+          <td><strong><%= "Fiscal Year (#{year-1}-#{(year)})" %></strong>: <%= number_to_currency(@result_by_fiscal_year[index], :unit => "$") %></td>
+        </tr>
+    <% end %>
+
+    <tr>
+      <td><strong>Total</strong>: <%= number_to_currency(@total_for_all_years, :unit => "$") %></td>
+    </tr>
+
+    <tr>
+      <td> <h2>Job Registration Information</h2></td>
+    </tr>
+
+    <tr>
+      <td>Total Non-Staff Registered: <%= @total_non_staff_registered %></td>
+    </tr>
+
+    <tr>
+      <td>Total Staff Registered: <%= @total_staff_registered %></td>
+    </tr>
+
+    <tr>
+      <td>Total Registered: <%= @total_registered %></td>
+    </tr>
+
+    <tr>
+      <td> <h2>Job Interest Information</h2></td>
+    </tr>
+
+    <tr>
+      <td>Total Interested: <%= @total_interested %></td>
+    </tr>
+
+    <tr>
+      <td>Total Contacted: <%= @total_contacted %></td>
+    </tr>
+
+    <tr>
+      <td>Total Hired: <%= @total_hired %></td>
+    </tr>
+
+    <tr>
+      <td>Total Job Interests: <%= @total_interests %></td>
+    </tr>
+
+    <tr>
+      <td><h2>Job Posting Information</h2></td>
+    </tr>
+
+    <tr>
+      <td>Complete: <%= @job_postings_complete %></td>
+    </tr>
+
+    <tr>
+      <td>Incomplete: <%= @job_postings_incomplete %></td>
+    </tr>
+
+    <% @job_fee_counts.each_with_index do |job_fee, i| %>
+        <tr>
+          <td><%= number_to_currency(JobFee.find(job_fee[0]).fee, :unit => "$") %>: <%= job_fee[1] %> (<%= @job_fee_percents[i] %>%)</td>
+        </tr>
+    <% end %>
+
+    <tr>
+      <td>No Interests: <%= @no_interests %> (<%= @no_interests_percent %>%)</td>
+    </tr>
+
+  </table>
+
+</div></div>

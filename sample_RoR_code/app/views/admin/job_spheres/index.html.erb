@@ -1,0 +1,43 @@
+<% title "Job Categories" %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:child_text => @title) %>
+
+<div id="section_head" class="index"><div class="pad">
+
+  <div class="actionbar">
+    <% if can? :create, JobSphere %><%= link_to 'New', new_admin_job_sphere_path, :class => 'btn add'%><% end %>
+  </div>
+
+  <h1><%= @title %></h1>
+
+</div></div>
+
+<div id="content"><div class="pad">
+
+  <% if @job_spheres.any? %>
+    <%= render :partial => 'admin/resultsheader', :locals => { :form_url => admin_job_spheres_path, :search_field => :q, :search_text => params[:q], :results_total => pluralize(@job_spheres.total_count, 'job categories') + ' found' } %>
+  <% end %>
+
+  <table>
+    <tr>
+      <th class="nowrap"><%= sortable "name" %></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% @job_spheres.each do |job_sphere| %>
+        <tr>
+          <td class="bold"><%= link_to job_sphere.name, admin_job_sphere_path(job_sphere) %></td>
+          <td>
+            <% if can? :update, JobSphere %><%= link_to 'Edit', edit_admin_job_sphere_path(job_sphere), :class => 'btn small' %><% end %>
+          </td>
+          <td>
+            <% if can? :destroy, JobSphere %><%= link_to 'Delete', admin_job_sphere_path(job_sphere), :confirm => 'Are you sure?', :method => :delete, :class => 'btn delete small' %><% end %>
+          </td>
+        </tr>
+    <% end %>
+  </table>
+
+  <%= paginate @job_spheres %>
+</div></div>

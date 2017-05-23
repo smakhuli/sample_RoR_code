@@ -1,0 +1,15 @@
+<% title @job_sphere.name %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:parent_url => admin_job_spheres_path, :parent_text => "Job Categories", :child_text => @title) %>
+
+<div id="section_head"><div class="pad">
+
+  <div class="actionbar">
+    <% if can? :update, @job_sphere %><%= link_to 'Edit', edit_admin_job_sphere_path(@job_sphere), :class => 'btn' %><% end %>
+    <% if can? :destroy, @job_sphere %><%= link_to 'Delete', admin_job_sphere_path(@job_sphere), :confirm => 'Are you sure?', :method => :delete, :class => 'btn delete small' %><% end %>
+  </div>
+
+  <h1><%= @title %></h1>
+
+</div></div>

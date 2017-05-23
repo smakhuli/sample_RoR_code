@@ -1,0 +1,6 @@
+<%= simple_form_for([:admin, @job_fee]) do |f| %>
+    <%= render "errors/list", object: f.object %>
+    <%= f.input :number_of_months %>
+    <%= f.input :fee %>
+    <%= f.button :wrapped, 'Save', class: "add" %>
+<% end %>

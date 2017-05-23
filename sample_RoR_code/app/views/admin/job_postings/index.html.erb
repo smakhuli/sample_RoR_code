@@ -1,0 +1,26 @@
+<% title "Job Postings" %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:child_text => @title) %>
+
+<div id="content"><div class="pad">
+
+  <table>
+    <tr>
+      <th class="nowrap"><%= sortable "title" %></th>
+      <th class="nowrap">Church URL</th>
+      <th></th>
+    </tr>
+
+    <% @job_postings.each do |job_posting| %>
+        <tr>
+          <td class="bold"><%= link_to job_posting.title, admin_job_posting_path(job_posting) %></td>
+          <td class="bold"><%= job_posting.church_url %></td>
+          <td>
+            <% if can? :update, JobPosting %><%= link_to 'Edit', edit_admin_job_posting_path(job_posting), :class => 'btn small' %><% end %>
+          </td>
+        </tr>
+    <% end %>
+  </table>
+
+</div></div>

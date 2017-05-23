@@ -1,0 +1,21 @@
+<div id="section_head"><div class="pad">
+
+  <h1><%= @title %></h1>
+
+  <% if @years.any? %>
+      <%= form_tag({}, :method => "get") do %>
+          <%= label_tag :year, "Select a year:" %>
+          <%= select_tag(:year, options_for_select(@years, params[:year]), :id => "jobyearselection") %>
+      <% end %>
+  <% end %>
+
+  <ul class="tabs">
+    <% if can? :read, :job_reports %>
+        <li <% if tab == "totals" %>class="active"<% end %>><%= link_to registration_totals_admin_job_reports_path(:year => params[:year]) do %><span>Annual Totals</span><% end %></li>
+        <li <% if tab == "stats" %>class="active"<% end %>><%= link_to registration_stats_admin_job_reports_path(:year => params[:year]) do %><span>Stats</span><% end %></li>
+        <li <% if tab == "job_postings" %>class="active"<% end %>><%= link_to registration_job_postings_admin_job_reports_path(:year => params[:year]) do %><span>Job Postings</span><% end %></li>
+        <li <% if tab == "stats_all_years" %>class="active"<% end %>><%= link_to registration_stats_all_years_admin_job_reports_path(:year => params[:year]) do %><span>Stats For All Years</span><% end %></li>
+    <% end %>
+  </ul>
+
+</div></div>

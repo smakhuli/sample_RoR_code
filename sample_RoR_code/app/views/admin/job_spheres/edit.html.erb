@@ -1,0 +1,14 @@
+<% title "Edit Job Category" %>
+<% selected_nav "job_posting" %>
+
+<%= show_breadcrumbs(:parent_url => admin_job_spheres_path, :parent_text => "Job Categories", :sub_parent_url => admin_job_sphere_path(@job_sphere), :sub_parent_text => @job_sphere.name, :child_text => @title) %>
+
+<div id="section_head" class="index"><div class="pad">
+  <h1><%= @title %></h1>
+</div></div>
+
+<div id="content"><div class="pad">
+
+  <%= render 'form' %>
+
+</div></div>
