@@ -1,0 +1,49 @@
+<% job_postings.each do |job_posting| %>
+
+  <%= link_to job_posting_path(job_posting, job_interest: 'job_interest'), class: "card job-posting #{ job_posting_type }" do %>
+    <% if job_posting.job_type.present? %>
+      <div class="position-type"><i class="icon-<%= job_posting.job_type.downcase %>"></i><%= job_posting.job_type %></div>
+    <% else %>
+      <div class="position-type"><i class="icon-not-specified"></i><%= "Not Specified" %></div>
+    <% end %>
+    <div class="position-info <% if user_signed_in? %><% if job_posting.is_owner?(current_user.id) || job_posting.job_interest?(current_user.id) %>with-extra<% end %><% end %>">
+      <h3>
+        <span class="position-title"><%= job_posting.title %></span>
+        <div class="smalls">
+          <% if job_posting_type == "new" %><small class="new">NEW</small><% end %>
+          <% if job_posting_type == "expired" %><small class="expired">EXPIRED</small><% end %>
+
+          <% if user_signed_in? %>
+
+            <% if job_posting.is_owner?(current_user.id) %>
+              <small class='my-job-posting'>MY JOB POSTING</small>
+            <% end %>
+
+            <% if job_posting.job_interest?(current_user.id) %>
+
+              <!-- if job_posting.job_interest?(current_user.id).hired? %> -->
+                <!-- <small class='hired'>HIRED!</small> -->
+              <% if job_posting.job_interest?(current_user.id).contacted? || job_posting.job_interest?(current_user.id).hired? %>
+                <small class='contacted'>CONTACTED</small>
+              <% elsif job_posting.job_interest?(current_user.id).interested? %>
+                <small class='expressed-interest'>EXPRESSED INTEREST</small>
+              <% end %>
+            <% end %>
+
+          <% end %>
+        </div>
+      </h3>
+
+      <div class="org-location">
+        <% unless job_posting.church_name.blank? %>
+          <strong><%= job_posting.church_name %></strong>
+        <% else %>
+          <strong>Not Provided</strong>
+        <% end %>
+        <span class="location"><%= job_posting.job_location %></span>
+      </div>
+    </div>
+    <button class="btn info pull-right">View</button>
+  <% end %>
+
+<% end %>

@@ -1,0 +1,55 @@
+<%= render partial: "job_postings/tabs", locals: { active_tab: "my_postings" } %>
+<% title "Job Interests" %>
+<% selected_nav "jobs" %>
+
+<div class="block">
+    <div class="g center">
+        <div class="u80 actions center-pad">
+          <%= link_to 'Back', job_postings_path, :class => 'btn outline pull-left' %>
+        </div>
+    </div>
+
+    <div class="g center">
+        <div class="u80 job-info">
+            <div class="highlight card" style="padding-bottom: 10px;">
+
+                <% if @job_interests.any? %>
+                    <h2 class="center"><%= "#{@job_interests.count} Job" %><% if @job_interests.count > 1 %> Interests<% else %> Interest<% end%> <%= " for #{@job_posting.title} Job Posting" %></h2>
+
+                    <table class="table row-link">
+                    <% @job_posting.job_interests.each do |job_interest| %>
+                        <tr>
+                          <tr>
+                            <td>
+                              <%= link_to job_interest_path(job_interest, employer: 'employer') do %>
+                                <% if job_interest.hired? %>
+                                    <i class="icon-ok"></i> 
+                                <% end %>
+                                <strong><%= job_interest.name %></strong>
+
+                                <% if job_interest.interested? %>
+                                    is <strong>Interested</strong>
+                                <% end %>
+                                <% if job_interest.contacted? %>
+                                    has been <strong>Contacted</strong>
+                                <% end %>
+                                <% if job_interest.hired? %>
+                                    has been <strong>Hired</strong>
+                                <% end %>
+                              <% end %>
+                            </td>
+
+                            <td><%= link_to 'View', job_interest_path(job_interest, employer: 'employer'), :class => 'btn green' %></td>
+                          </tr>
+
+                          <td><%= link_to 'View', job_interest_path(job_interest, employer: 'employer'), :class => 'btn green' %></td>
+                        </tr>
+                    <% end %>
+                  </table>
+                <% else %>
+                    <h2 class="center">No one has expressed interest for this position</h2>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>

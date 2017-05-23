@@ -1,0 +1,17 @@
+<span class="h2" style="color: #333333;display: block;font-family: Arial;font-size: 30px;font-weight: normal;line-height: 100%;margin-bottom: 10px;text-align: left;">
+	Dear <%= @user.firstname %>,
+</span>
+
+<p>Thank you for your payment for the <strong><%= @job_registration.job_posting.title %></strong> job posting.</p>
+
+<p>This job posting will run for <strong><%= @job_registration.number_of_months %></strong> starting on <%= @job_registration.start_date.strftime("%B %e, %Y") %> through <%= @job_registration.end_date.strftime("%B %e, %Y") %>.</p>
+
+<% if @job_registration.account.transactions.last %>
+    <div style="background: #DDDDDD; padding-top: 20px; padding-bottom: 20px; padding-left: 20px; padding-right: 20px;">
+      <h3>Total paid: <%= @job_registration.account.transactions.last.amount.abs.to_currency %></h3>
+    </div>
+<% end %>
+
+<p>&nbsp;</p>
+<p>Blessings,<br />
+<em>The Global Legacy Team</em></p>

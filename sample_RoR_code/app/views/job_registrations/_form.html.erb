@@ -1,0 +1,26 @@
+<%= content_for(:head) do %>
+    <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+    <%= javascript_include_tag "redactor" %>
+    <%= stylesheet_link_tag "redactor" %>
+<% end %>
+
+<%	@groupClassNum = 'g' + JobFee.all.count.to_s %>
+
+<%= simple_form_for(@job_registration, html: { id: "job_registration_form" }) do |f| %>
+    <%= render "errors/list", object: f.object %>
+
+    <% if current_user.is_bethel_staff? %>
+      <%= f.input :job_fee_id, collection: JobFee.job_fee_options, required: true, as: :radio_buttons, label: 'Select time this post is active (Prices do not apply to Bethel Staff).', checked: @job_registration.job_fee_id, :wrapper_html => { :class => 'price-cards' }, :collection_wrapper_class => @groupClassNum, :item_wrapper_class => 'u' %>
+    <% else %>
+      <%= f.input :job_fee_id, collection: JobFee.job_fee_options, required: true, as: :radio_buttons, label: 'Select time this post is active', checked: @job_registration.job_fee_id, :wrapper_html => { :class => 'price-cards' }, :collection_wrapper_class => @groupClassNum, :item_wrapper_class => 'u' %>
+    <% end %>
+
+    <%= f.input :start_date, label: "Start Date", as: :string, input_html: { autocomplete: "off", value: (@job_registration.start_date.blank? ? '' : @job_registration.start_date.strftime("%-d %B %Y")) }, :wrapper_html => { :class => 'input-center-50' }, hint: "Select a starting date for your job post to be listed" %>
+
+    <% if current_user.is_bethel_staff? %>
+      <%= f.button :wrapped, 'Post Job', disable_with: "..saving", class: 'add large', cancel: job_postings_path %>
+    <% else %>
+      <%= f.button :wrapped, 'Make Payment', disable_with: "..saving", class: 'add large', cancel: job_postings_path %>
+    <% end %>
+<% end %>

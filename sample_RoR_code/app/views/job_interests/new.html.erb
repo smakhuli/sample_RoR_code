@@ -1,0 +1,14 @@
+<%= render partial: "job_postings/tabs", locals: { active_tab: "find_a_job" } %>
+<% title "New Job Interest for #{@job_posting.title} Job Posting" %>
+<% selected_nav "jobs" %>
+
+<div class="block main-pad">
+  <div class="g">
+    <div class="u50" style="margin: 0 auto; float: none;">
+
+    	<h1 class="center">Your Info</h1>
+    	<%= render 'form' %>
+
+    </div>
+  </div>
+</div>

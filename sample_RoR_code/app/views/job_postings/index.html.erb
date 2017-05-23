@@ -1,0 +1,67 @@
+<% title "Job Postings" %>
+<% selected_nav "jobs" %>
+
+<%= render partial: "tabs", locals: { active_tab: "my_postings" } %>
+
+<div class="block">
+  <div class="g">
+
+    <div class="u100 m-center">
+      <div class="pad">
+        <% if can? :create, JobPosting %><%= link_to "Post A Job", new_job_posting_path, class: "btn add pull-right m-center" %><% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @incomplete_job_postings.any? %>
+<section class="section highlight" style="margin-bottom: 20px;">
+  <div class="block">
+    <div class="g center">
+      <div class="u80 simple">
+        
+          <h3 class="center">You have incomplete job postings!</h3>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @incomplete_job_postings, :job_posting_type => "incomplete" } %>
+        
+      </div>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<section>
+    <div class="block my-postings">
+      <div class="g center">
+
+        <div class="u80 simple" style="padding-bottom: 30px;">
+          <% if @pending_job_postings.any? %>
+            <div style="padding-bottom: 40px;">
+              <h2 class="alt center">Scheduled Job Postings <small class="num"><%= @pending_job_postings.count %></small></h2>
+              <%= render :partial => "job_postings", :locals => { :job_postings => @pending_job_postings, :job_posting_type => "pending" } %>
+            </div>
+          <% end %>
+
+          <% if @open_job_postings.any? %>
+            <h2 class="alt center">Open Job Postings <small class="num"><%= @open_job_postings.count %></small></h2>
+            <%= render :partial => "job_postings", :locals => { :job_postings => @open_job_postings, :job_posting_type => "open" } %>
+          <% end %>
+
+        </div>
+
+      </div>
+    </div>
+</section>
+
+
+<% if @closed_job_postings.any? %>
+<section class="section lightergray" style="padding-bottom: 60px;">
+    <div class="block my-postings closed-postings">
+      <div class="g center">
+        <div class="u80 simple">
+          <h2 class="alt center">Closed Job Postings <small class="num"><%= @closed_job_postings.count %></small></h2>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @closed_job_postings, :job_posting_type => "closed" } %>
+        </div>
+      </div>
+    </div>
+</section>
+<% end %>

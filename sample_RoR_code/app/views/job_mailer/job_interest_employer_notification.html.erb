@@ -1,0 +1,27 @@
+<span class="h2" style="color: #333333;display: block;font-family: Arial;font-size: 30px;font-weight: normal;line-height: 100%;margin-bottom: 10px;text-align: left;">
+	Dear <%= @user.firstname %>,
+</span>
+
+<p><%= @job_interest.name %> has expressed interest in your <strong><%= @job_posting.title %></strong> job posting<% if @job_interest.start_date %> and can start on <em><%= @job_interest.start_date.strftime("%B %e, %Y") %><% end %></em>.</p>
+
+<% if @job_interest.email %>
+    <p><strong>Email address:</strong> <%= @job_interest.email %></p>
+<% end %>
+
+<% if @job_interest.phone_number %>
+    <p><strong>Phone Number:</strong> <%= @job_interest.phone_number %></p>
+<% end %>
+
+<% if @job_interest.why_me %>
+    <strong>Qualifications:</strong> <%= raw(@job_interest.why_me) %>
+<% end %>
+
+<p>&nbsp;</p>
+
+<p>
+  Click&nbsp;<%= link_to 'here', job_interest_url(@job_interest, employer: 'employer') %><%= " to go see #{@job_interest.name}'s information." %>
+</p>
+
+<p>&nbsp;</p>
+<p>Blessings,<br />
+<em>The Global Legacy Team</em></p>

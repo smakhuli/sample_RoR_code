@@ -1,0 +1,128 @@
+<% title @job_registration.job_posting.title %>
+
+<div class="fullpage narrow training-registration">
+
+  <h1 class="center"><small>Paying <%= @job_registration.job_posting_fee.to_currency %> now with...</small></h1>
+
+  <% if @result && @result.message %>
+      <div id="error_explanation">
+        <ul>
+          <% @result.message.split("\n").each do |msg| %>
+              <li><%= msg == "Gateway Rejected: avs" ? "Billing Zip code does not match what is on file with your card issuer" : msg %></li>
+          <% end %>
+        </ul>
+      </div>
+  <% end %>
+
+  <% if @job_registration.account.braintree_card_find %>
+      <% hide_card_form = true unless @show_new_card_div %>
+      <div class="g">
+        <label for="existing_card_true" class="u50 clickable">
+          <div class="card pad">
+            <%= radio_button_tag 'existing_card', 'true', hide_card_form %>
+            <%= @job_registration.account.braintree_payment_details.blank? ? "Credit card on file" : @job_registration.account.braintree_payment_details %>
+          </div>
+        </label>
+        <label for="existing_card_false" class="u50 clickable">
+          <div class="card pad">
+            <%= radio_button_tag 'existing_card', 'false', @show_new_card_div %>
+            A different credit card
+          </div>
+        </label>
+      </div>
+
+      <div class="g">
+        <div class="actions select-existing-card u100" style="<% if @show_new_card_div %>display:none<% end %>">
+          <div class="pull-left"><%= link_to 'Back', edit_job_registration_path(@job_registration), :class => 'btn dim' %></div>
+          <div class="pull-right"><%= link_to 'Pay Now', job_charge_on_file_job_registration_path, :class => "btn add pay-existing-card" %></div>
+        </div>
+      </div>
+
+  <% end %>
+
+  <%= form_for :customer,
+               :params => @result && @result.params[:customer],
+               :errors => @result && @result.errors.for(:customer),
+               :builder => ApplicationHelper::BraintreeFormBuilder,
+               :url => Braintree::TransparentRedirect.url,
+               :html => {autocomplete: "off", class: "edit_job_registration simple_form", style: hide_card_form ? "display:none; " : "" } do |f| -%>
+      <fieldset>
+
+        <% if hide_card_form %>
+            <div class="emphasize" style="margin-bottom: 30px;">
+              <strong>Please note:</strong>
+              This will update the card we have on file for <%= current_user.full_name %>.
+            </div>
+        <% end %>
+
+        <%= f.fields_for :credit_card do |c| -%>
+
+            <div class="input">
+              <%= c.label :cardholder_name, "Name on Card", class: "control-label" %>
+              <%= c.text_field :cardholder_name, :class => "text" %>
+            </div>
+
+            <div class="input">
+              <%= c.label :number, "Card Number", class: "control-label" %>
+              <%= c.text_field :number, :class => "text" %>
+              <div class="hint">
+                Visa, Mastercard, American Express, Discover
+              </div>
+            </div>
+
+            <div class="input">
+              <%= c.label :expiration_month, "Expiration Date", class: "control-label" %> <br>
+
+              <% months_array = (1..12).map { |m| ["#{sprintf '%02d', m} - #{Date::MONTHNAMES[m]}", m] } %>
+              <% years_array = (Time.new.year..15.years.from_now.year).map { |y| [y] } %>
+
+              <% if @result && @result.message && (@result.message.include?("Expired Card") || @result.message.include?("Invalid Expiration Date") || @result.message.include?("Expiration month is invalid.") || @result.message.include?("Expiration year is invalid.")) %>
+                  <div class="field_with_errors">
+              <% end %>
+              <%= c.select :expiration_month, options_for_select(months_array), { include_blank: "Select month..." }, { class: Rails.env.test? ? "" : "cselect-narrow" } %> <%= c.select :expiration_year, options_for_select(years_array), { include_blank: "Select year..." }, { class:  Rails.env.test? ? "" : "cselect-narrow" } %>
+              <% if @result && @result.message && (@result.message.include?("Expired Card") || @result.message.include?("Invalid Expiration Date") || @result.message.include?("Expiration month is invalid.") || @result.message.include?("Expiration year is invalid.")) %></div>
+              <% end %>
+            </div>
+
+            <div class="input">
+              <%= c.label :cvv, "Card Security Code (CVV)", class: "control-label" %>
+              <%= c.text_field :cvv, size: 5, style: "width:100px; " %>
+            </div>
+        <% end -%>
+        <%= f.fields_for :credit_card do |cc| -%>
+            <%= cc.fields_for :billing_address do |b| -%>
+
+                <div class="input">
+                  <%= b.label :country_code_alpha2, "Country", class: "control-label" %><br>
+                  <% if @result && @result.message && (@result.message.include?("Addresses must have at least one field filled in.")) %>
+                      <div class="field_with_errors">
+                  <% end %>
+                  <%= b.select :country_code_alpha2, options_for_select(countries_for_select), { include_blank: true }, { data: { placeholder: "Select country..." }, class: "country-select #{Rails.env.test? ? "" : "chzn-select"}", style: "width:267px;"} %>
+                  <% if @result && @result.message && (@result.message.include?("Addresses must have at least one field filled in.")) %></div>
+                  <% end %>
+                </div>
+
+                <div class="input billing-zip">
+                  <%= b.label :postal_code, "Billing ZIP Code", class: "control-label" %>
+                  <%= b.text_field :postal_code, size: 10, style: "width:100px; " %>
+                  <span class="hint">*US Only</span>
+                </div>
+
+            <% end -%>
+        <% end -%>
+      </fieldset>
+
+      <%= hidden_field_tag :tr_data, @job_registration.tr_data(job_confirm_job_registration_url(@job_registration.id)) %>
+
+      <div class="actions">
+        <div class="pull-left"><%= link_to 'Back', edit_job_registration_path(@job_registration), :class => 'btn dim' %></div>
+        <div class="pull-right"><%= f.submit 'Pay Now', :disable_with => "Processing...", :class => "btn add" %></div>
+      </div>
+  <% end -%>
+
+  <div class="seal">
+    <%= image_tag("ssl-seal.gif") %>
+  </div>
+
+
+</div>

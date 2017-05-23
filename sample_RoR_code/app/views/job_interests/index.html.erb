@@ -1,0 +1,174 @@
+<% @override_og_data = true %>
+<% content_for(:head) do %>
+  <meta property="og:url" content="http://<%= request.subdomain.present? ? "#{request.subdomain}." : "" %>globallegacy.com/jobs">  
+  <meta property="og:image" content="http://<%= request.subdomain.present? ? "#{request.subdomain}." : "" %>globallegacy.com/facebook-link-find-a-job.jpg">
+  <meta property="og:image:url" content="http://<%= request.subdomain.present? ? "#{request.subdomain}." : "" %>globallegacy.com/facebook-link-find-a-job.jpg">
+ 
+  <meta property="og:image:type" content="image/jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:locale" content="en_US">
+  <meta property="fb:app_id" content="157134641005390">   
+  <meta property="og:site_name" content="Global Legacy Jobs">
+  <meta property="og:title" content="<%= @title || "Connecting and encouraging revival leaders everywhere" %>"> 
+  <meta property="og:description" content="<%= @meta_description || "Global Legacy is delighted to introduce “GL Jobs,” a place where you can post a job or find your next one." %>"> 
+<% end %>
+
+<% title "GL Jobs" %>
+<% selected_nav "jobs" %>
+<% @colored_nav = "find" %>
+
+<%= render partial: "job_postings/tabs", locals: { active_tab: "find_a_job" } %>
+
+<% if params[:search].present? %>
+
+<div class="block job-listing">
+  <div class="g center">
+    <div class="u70">
+      <h1 class="center">Search Results
+        <small class="num"><%= @new_job_postings.count + @other_job_postings.count + @expired_job_postings.count %></small>
+        <small class="close pull-right"><%= link_to raw('<i class="icon-close"></i>'),job_interests_path %></small>
+      </h1>
+    </div>
+    <%= form_tag job_interests_path, method: :get, class: "" do %>
+      <div class="u70">
+        <div class="pad">
+          <div class="control-group">
+            <%= text_field_tag :search, params[:search], placeholder: 'Enter Search Options', class: "submit_on_enter has-icon" %>
+            <label for="search" class="icon-search input-icon"></label>
+          </div>
+        </div>
+        <div class="actions center gray" style="display: none;">
+          <%= submit_tag "Search", class: "btn primary" %>
+        </div>
+        <% if user_signed_in? && JobInterest.my_job_posting_interests(current_user.id).count > 0 %>
+            <div class="actions center gray" style="display: none;">
+              <%= submit_tag "You have #{JobInterest.my_job_posting_interests(current_user.id).count} Job Interests",  class: "btn primary" %>
+            </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="u70" style="padding-bottom: 60px;">
+      <% if @new_job_postings.any? %>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @new_job_postings, :job_posting_type => "new" } %>
+      <% end %>
+
+      <% if @other_job_postings.any? %>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @other_job_postings, :job_posting_type => "other" } %>
+      <% end %>
+
+      <% if @expired_job_postings.any? %>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @expired_job_postings, :job_posting_type => "expired" } %>
+      <% end %>
+
+      <div class="highlight center" style="margin-top: 30px;">
+        <% if user_signed_in? && JobInterest.my_job_posting_interests(current_user.id).count > 0 && params[:search] == "My Job Posting Interests" %>
+          That's all the postings you have expressed interest in. <%= link_to "See all job postings", job_interests_path %>.
+        <% else %>
+          Want to add your own job listing here? <%= link_to "Post a Job", job_postings_path(job_posting: 'post a job') %>
+        <% end %>
+      </div>
+    </div>
+    <div class="center-block jobs-fine-print u70" id="disclaimer_results" style="padding-top: 80px;">
+        <p>The Global Legacy jobs board is maintained in order to provide access to volunteer and employment opportunities ("opportunities") for both individuals and organizations. However, Global Legacy is not involved in the actual transaction between organizations and individuals, and as a result we have little or no control over the process or experience. Global Legacy and its employees make no representations as to the accuracy, quality, safety, or legality of the opportunities posted, the ability of organizations to offer opportunities to individuals, or the integrity, morality, legality or competency of individuals who express interest in such opportunities. Accordingly, the information provided herein is provided "AS IS." By using this site, you agree to assume all risks associated with dealing with other individuals whom you come in contact with through information provided on this website. In the event of any dispute with one or more individuals you agree, by using this site, to release Global Legacy (including its employees) from claims, demands and damages (actual and consequential, direct and indirect) of every kind and nature, known and unknown, suspected and unsuspected, disclosed and undisclosed, arising out of, or in any way connected with such disputes.</p>
+      </div>
+  </div>
+</div>
+
+<% else %>
+
+<section class="job-listing">
+  <div class="hero m-hide" style="background: url(<%= asset_path("jobs-bkg-findjob.jpg") %>); background-position: center center;">
+    <%= image_tag("GL-Jobs.png", class: "center") %>
+    Find your next job.
+    <div class="job-search-bar">
+      <%= form_tag job_interests_path, method: :get, class: "simple_form" do %>
+        <div class="control-group" style="font-size: 0em;">
+          <%= text_field_tag :search, params[:search], placeholder: 'name, location or category', class: "submit_on_enter has-icon" %>
+          <label for="search" class="icon-search input-icon"></label>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="section lightergray">
+  <div class="block">
+    <!-- <h2 class="center">Discover Your Next Job</h2> -->
+    <div class="g3 center">
+      <div class="u tidbit">
+        <h3>Search Job Listings</h3>
+        <p>Search our unique list of jobs within a global community of revival leaders.</p>
+      </div>
+      <div class="u tidbit">
+        <h3 class="m-toppad">Filter Jobs by Location</h3>
+        <p>Looking for a career in a specific part of the world?  Search for your next job based on location. </p>
+      </div>
+      <div class="u tidbit">
+        <h3 class="m-toppad">Quick Application Process</h3>
+        <p>Express interest in a position in three simple steps: Search Job listings, fill out a basic application, express interest in your next job.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="block job-listing">
+  <div class="g">
+    <div class="u30 pull-right d-pad">
+      <h3>Search job postings</h3>
+      <%= form_tag job_interests_path, method: :get, class: "simple_form" do %>
+
+          <div class="pad">
+            <div class="control-group">
+              <%= text_field_tag :search, params[:search], placeholder: 'name, location or category', class: "submit_on_enter has-icon" %>
+              <label for="search" class="icon-search input-icon"></label>
+            </div>
+
+            <ul style="padding-top: 20px;">
+              <% JobSphere.all.each do |job_sphere| %>
+                <li>
+                  <button class="link" name="commit" type="submit" value="<%= job_sphere.name %>">
+                    <i class='icon-tag'></i> <%= job_sphere.name %>
+                  </button>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+
+          <div class="actions center gray m-hide" style="display: none;">
+            <%= submit_tag "Search", class: "btn primary" %>
+          </div>
+
+          <% if user_signed_in? && JobInterest.my_job_posting_interests(current_user.id).count > 0 %>
+            <div class="actions center gray">
+              <%= submit_tag "You have #{JobInterest.my_job_posting_interests(current_user.id).count} Job Interests",  class: "btn primary" %>
+            </div>
+          <% end %>
+
+      <% end %>
+    </div>
+
+    <div class="u70" style="padding-bottom: 60px;">      
+      
+      <h1 class="center">Recent Job Postings <small class="num"><%= @new_job_postings.count + @other_job_postings.count %></small></h1>
+
+      <% unless @new_job_postings.empty? && @other_job_postings.empty? %>
+        <% if @new_job_postings.any? %>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @new_job_postings, :job_posting_type => "new" } %>
+        <% end %>
+
+        <% if @other_job_postings.any? %>
+          <%= render :partial => "job_postings", :locals => { :job_postings => @other_job_postings, :job_posting_type => "other" } %>
+        <% end %>
+      <% else %>
+          <div class="highlight center" style="margin-top: 30px;">No Job Postings available at this time.</div>
+      <% end %>
+
+      <div class="highlight center" style="margin-top: 30px;">Want to add your own job listing here? <%= link_to "Post a Job", job_postings_path(job_posting: 'post a job') %></div>
+    </div>
+  </div>
+  <div class="center-block jobs-fine-print" id="disclaimer_results" style="padding-top: 120px;">
+        <p>The Global Legacy jobs board is maintained in order to provide access to volunteer and employment opportunities ("opportunities") for both individuals and organizations. However, Global Legacy is not involved in the actual transaction between organizations and individuals, and as a result we have little or no control over the process or experience. Global Legacy and its employees make no representations as to the accuracy, quality, safety, or legality of the opportunities posted, the ability of organizations to offer opportunities to individuals, or the integrity, morality, legality or competency of individuals who express interest in such opportunities. Accordingly, the information provided herein is provided "AS IS." By using this site, you agree to assume all risks associated with dealing with other individuals whom you come in contact with through information provided on this website. In the event of any dispute with one or more individuals you agree, by using this site, to release Global Legacy (including its employees) from claims, demands and damages (actual and consequential, direct and indirect) of every kind and nature, known and unknown, suspected and unsuspected, disclosed and undisclosed, arising out of, or in any way connected with such disputes.</p>
+      </div>
+</div>
+<% end %>

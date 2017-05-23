@@ -1,0 +1,216 @@
+<% title @job_posting.title %>
+<% selected_nav "jobs" %>
+
+<% if @job_posting.is_applicant?(params) %>
+  <%= render partial: "tabs", locals: { active_tab: "find_a_job" } %>
+<% else %>
+  <%= render partial: "tabs", locals: { active_tab: "my_postings" } %>
+<% end %>
+
+<div class="block">
+
+  <div class="g center">
+    <div class="u80 actions center-pad">
+      <% if @job_posting.is_applicant?(params) %>
+
+        <%= link_to raw('<i class="icon-angle-left"></i> Back'), job_interests_path, :class => 'btn outline pull-left center-icon' %>
+        <% if user_signed_in? %>
+          <% unless @job_posting.job_interest?(current_user.id) %>
+            <%= link_to 'Interested in this position', new_job_interest_path(job_posting_id: @job_posting.id), :class => 'btn green pull-right' %>
+          <% else %>
+            <%= link_to raw("<i class=\"icon-pencil\"></i> Edit Interest"), edit_job_interest_path(@job_posting.job_interest?(current_user.id)), :class => 'btn edit_interest link pull-right' %>
+            <%= link_to raw("<i class=\"icon-remove\"></i> Remove Interest"), job_interest_path(@job_posting.job_interest?(current_user.id)), :confirm => 'Are you sure?', :method => :delete, :class => 'btn link pull-right' %>
+          <% end %>
+        <% else %>
+              <%= link_to 'Interested in this position', new_job_interest_path(job_posting_id: @job_posting.id), :class => 'btn green pull-right' %>
+        <% end %>
+
+      <% else %>
+
+        <%= link_to raw('<i class="icon-angle-left"></i> Back'), job_postings_path, :class => 'btn outline pull-left center-icon' %>
+
+      <% end %>
+
+      <% unless @job_posting.is_applicant?(params) || @job_posting.incomplete? %>
+        <% if can? :update, @job_posting %><%= link_to raw('<i class="icon-repeat"></i> Duplicate this post'), duplicate_job_posting_path(@job_posting), :class => 'btn duplicate link pull-right' %><% end %>
+      <% end %>
+
+      <% if @job_posting.incomplete? || (@job_posting.job_registration && @job_posting.job_registration.closed?) %>
+        <% if can? :destroy, @job_posting %>
+          <%= link_to raw("<i class=\"icon-trash\"></i> Delete"), job_posting_path(@job_posting), :confirm => 'Are you sure?', :method => :delete, :class => 'btn link pull-right' %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="g center">
+    <div class="u80 job-info">
+
+      <% if @job_posting.incomplete? %>
+        <div class="highlight center">
+          <p style="padding-bottom: 10px;"><strong>Please review information below.</strong>  If it's correct, then select active time period and payment.</p>
+          <% if can? :update, @job_posting %>
+            <% job_registration = JobRegistration.find_by_job_posting_id(@job_posting.id) %>
+            <% if job_registration %>
+                <%= link_to 'Yes, this is correct', edit_job_registration_path(job_registration, job_posting_id: @job_posting.id, job_fee_id: @job_fee_id), :class => 'btn activate green' %>
+            <% else %>
+                <%= link_to 'Yes, this is correct', new_job_registration_path(job_posting_id: @job_posting.id, job_fee_id: @job_fee_id), :class => 'btn activate green' %>
+            <% end %>
+            <%= link_to 'No, edit posting', edit_job_posting_path(@job_posting), :class => 'btn edit info' %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% unless @job_posting.is_applicant?(params) %>
+        <% if @job_posting.job_interests.count > 0 && (@job_interests_expressed_interest.any? || @job_interests_contacted.any?) %>
+          <% if can? :update, @job_posting %>
+            <div class="highlight card" style="padding-bottom: 10px;">
+              <!--<%= link_to 'View Interests', view_interests_job_posting_path(@job_posting, employer: 'employer'), :class => 'btn view_interests pull-right m-full' %> -->
+              <h2 class="center">People interested in this position</h2>
+            
+              <table class="table row-link">
+                <% @job_interests_expressed_interest.each do |job_interest| %>
+                    <tr>
+                      <td>
+                        <%= link_to job_interest_path(job_interest, employer: 'employer') do %>
+                          <strong><%= job_interest.name %></strong> expressed <strong>Interest</strong> on <%= job_interest.status_date.strftime("%B %e, %Y") %>
+                        <% end %>
+                      </td>
+
+                      <td><%= link_to 'View', job_interest_path(job_interest, employer: 'employer'), :class => 'btn green' %></td>
+                    </tr>
+                <% end %>
+
+                <% @job_interests_contacted.each do |job_interest| %>
+                    <tr>
+                      <td>
+                        <%= link_to job_interest_path(job_interest, employer: 'employer') do %>
+                          <strong><%= job_interest.name %></strong> was <strong>Contacted</strong> on <%= job_interest.status_date.strftime("%B %e, %Y") %>
+                        <% end %>
+                      </td>
+
+                      <td><%= link_to 'View', job_interest_path(job_interest, employer: 'employer'), :class => 'btn green' %></td>
+                    </tr>
+                <% end %>
+
+              </table>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <div class="card">
+        <% if user_signed_in? && @job_interests_hired.any? && @job_posting.is_owner?(current_user.id) %>
+          <% @job_interests_hired.each do |job_interest| %>
+            <%= link_to job_interest_path(job_interest, employer: 'employer'), class: "hired" do %>
+              <i class="icon-ok"></i>
+              <strong><%= job_interest.name %></strong> was <strong>Hired</strong> on <%= job_interest.status_date.strftime("%B %e, %Y") %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <div class="pad">
+          
+          <h1>
+            <% if user_signed_in? && @job_posting.job_registration && @job_posting.job_registration.end_date && @job_posting.job_registration.closed? %>
+                <span class="status red pull-right m-full">Expired</span>
+            <% end %>
+
+            <% if user_signed_in? && @job_posting.job_interest?(current_user.id) %>
+              <span class="status green pull-right m-full">Expressed Interest</span>
+            <% end %>
+
+            <%= @title %>
+
+            <% if user_signed_in? && @job_posting.is_owner?(current_user.id) %>
+              <% unless @job_posting.incomplete? || @job_posting.job_registration.closed? %>
+                <% if can? :update, @job_posting %>
+                  <%= link_to 'Edit', edit_job_posting_path(@job_posting), :class => 'btn edit info pull-right' %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </h1>
+
+          <div class="job-heading top-line">
+            <% if @job_posting.try(:job_location).present? %>
+              <strong class="text-color mediumgray"><i class="icon-map-marker"></i>  <%= @job_posting.job_location %></strong>
+            <% end %>
+
+            <% if @job_posting.job_spheres.any? %>
+              <% @job_posting.job_spheres.each do |job_sphere| %>
+                  <% if job_sphere.try(:name).present? %>
+                    <span class="tag reversed"><%= job_sphere.name %></span>
+                  <% end %>
+              <% end %>
+            <% end %>
+
+            <span class="create-date text-color gray">
+              Created <%= @job_posting.created_at.strftime('%b %d, %Y %l:%M %P') %>
+            </span>
+          </div>
+
+          <% if @job_posting.try(:church_name).present? || @job_posting.try(:church_url).present? %>
+          <div class="church-info">
+            <% if @job_posting.try(:church_name).present? %>
+                <strong class="text-color mediumgray"><%= @job_posting.church_name %></strong><br>
+            <% end %>
+
+            <% if @job_posting.try(:church_url).present? %>
+                <%= link_to @job_posting.church_url, "#{@job_posting.church_url}" %>
+            <% end %>
+          </div>
+          <% end %>
+        </div>
+
+        <section style="background: #EEE;">
+          <div class="job-details prose pad">
+            <% if @job_posting.try(:job_type).present? %>
+              <dl>
+                <dt>Job Type:</dt>
+                <dd><%= @job_posting.job_type %></dd>
+              </dl>
+            <% end %>
+
+            <% if @job_posting.try(:hours_per_week).present? %>
+              <dl>
+                <dt>Hours Per Week:</dt>
+                <dd><%= @job_posting.hours_per_week %></dd>
+              </dl>
+            <% end %>
+
+            <% if @job_posting.try(:job_description).present? %>
+                <dl>
+                  <dt>Job Description:</dt>
+                  <dd><%= raw(@job_posting.job_description) %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_posting.try(:job_requirements).present? %>
+                <dl>
+                  <dt>Job Requirements:</dt>
+                  <dd><%= raw(@job_posting.job_requirements) %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_posting.try(:job_nice_to_haves).present? %>
+                <dl>
+                  <dt>Highly Desired:</dt>
+                  <dd><%= raw(@job_posting.job_nice_to_haves) %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_posting.try(:reports_to).present? %>
+                <dl>
+                  <dt>Reports To:</dt>
+                  <dd><%= @job_posting.reports_to %></dd>
+                </dl>
+            <% end %>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

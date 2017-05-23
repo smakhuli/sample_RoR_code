@@ -1,0 +1,111 @@
+<% if @job_posting.is_employer?(params) %>
+    <%= render partial: "job_postings/tabs", locals: { active_tab: "my_postings" } %>
+<% else %>
+    <%= render partial: "job_postings/tabs", locals: { active_tab: "find_a_job" } %>
+<% end %>
+
+<% title "Interest expressed for #{@job_posting.title}" %>
+<% selected_nav "jobs" %>
+
+<div class="block">
+  <div class="g center">
+
+    <div class="u80 actions center-pad">
+      <% if @job_posting.is_employer?(params) %>
+          <%= link_to raw('<i class="icon-angle-left"></i> Back'), job_posting_path(@job_posting), :class => 'btn outline pull-left center-icon' %>
+
+          <% if @job_interest.interested? %>
+            <%= link_to 'Mark as Contacted', contacted_job_interest_path(@job_interest), :class => 'btn info pull-right' %>
+          <% end %>
+
+          <% if @job_interest.contacted? %>
+            <%= link_to 'Mark as Hired', hired_job_interest_path(@job_interest), :class => 'btn green pull-right' %>
+          <% end %>
+
+      <% else %>
+        <% if params[:firsttime] %>
+          <div class="highlight center">
+            <p style="padding-bottom: 10px;">Interest sent to employer! They will be in touch with you soon. </p>
+            <%= link_to 'Finish', job_interests_path, :class => 'btn info' %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="u80 job-info">
+      <div class="card">
+        <% if @job_posting.is_employer?(params) %>
+          <% if @job_interest.hired? %>
+            <div class="status-bar green">
+              Hired!
+            </div>
+          <% end %>
+        <% end %>
+        <div class="pad">
+          <div class="avatar-name">
+            <%= image_tag User.find(@job_interest.applicant_id).profile_picture(:large), class: "avatar pull-left", alt: "Profile Picture" %>
+            <div class="name">
+              <h1>
+                <% if @job_interest.name.present? %>
+                  <%= @job_interest.name %>
+                <% else %>
+                  No name given
+                <% end %>
+              </h1>
+              <h2 class="dim">is interested in <%= @job_posting.title %></h2>
+            </div>
+          </div>
+
+          <div class="top-line">
+            <!-- Added code below to show applicant's BSSM years of attendance if applicable -->
+            <% if User.find_by_id(@job_interest.applicant_id) && User.get_bssm_years(@job_interest.applicant_id).any? %>
+                <dl>
+                  <dt>BSSM Alumni:</dt>
+                  <dd>
+                    <% User.get_bssm_years(@job_interest.applicant_id).each do |g| %>
+                      <%= raw(bssm_group(g)) %>
+                    <% end %>
+                  </dd>
+                </dl>
+            <% end %>
+            <% if @job_interest.try(:phone_number).present? %>
+                <dl>
+                  <dt>Phone Number:</dt>
+                  <dd><%= @job_interest.phone_number %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_interest.try(:email).present? %>
+                <dl>
+                  <dt>Email:</dt>
+                  <dd><%= @job_interest.email %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_interest.try(:why_me).present? %>
+                <dl>
+                  <dt>My Qualifications:</dt>
+                  <dd><%= raw(@job_interest.why_me) %></dd>
+                </dl>
+            <% end %>
+
+            <% if @job_interest.try(:start_date).present? %>
+                <dl>
+                  <dt>Start Date:</dt>
+                  <dd><%= @job_interest.start_date.strftime("%B %e, %Y") %></dd>
+                </dl>
+            <% end %>
+          </div>
+          <div class="center">
+            <% if @job_interest.is_owner?(current_user.id) %>
+              <% if can? :update, @job_interest %><%= link_to raw('<i class="icon-pencil"></i> Edit'), edit_job_interest_path(@job_interest), :class => 'btn link' %><% end %>
+              <% if can? :destroy, @job_interest %><%= link_to raw('<i class="icon-trash"></i> Delete'), job_interest_path(@job_interest), :confirm => 'Are you sure?', :method => :delete, :class => 'btn link' %><% end %>
+            <% end %>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

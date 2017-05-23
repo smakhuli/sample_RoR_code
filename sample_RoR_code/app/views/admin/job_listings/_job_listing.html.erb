@@ -1,0 +1,42 @@
+<p><h2>List of Active Job Postings</h2></p>
+
+<% if @job_postings.any? %>
+    <% @job_postings.each do |job_posting| %>
+        <p>
+          <strong>Title: </strong><%= link_to job_posting.title, job_posting_url(job_posting, job_interest: 'job_interest') %>
+          <br>
+
+          <% if job_posting.job_location.present? %>
+              <strong>Location: </strong><%= job_posting.job_location %>
+              <br>
+          <% end %>
+
+          <% if job_posting.church_name.present? %>
+              <strong>Organization Name: </strong><%= job_posting.church_name %>
+              <br>
+          <% end %>
+
+          <% if job_posting.job_type.present? %>
+              <strong>Job Type: </strong><%= job_posting.job_type %>
+              <br>
+          <% end %>
+
+          <% if job_posting.hours_per_week.present? %>
+              <strong>Hours Per Week: </strong><%= job_posting.hours_per_week %>
+              <br>
+          <% end %>
+
+          <% if job_posting.job_registration && job_posting.job_registration.end_date.present? %>
+              <strong>Expires: </strong><%= job_posting.job_registration.end_date.strftime("%B %e, %Y") %>
+              <br>
+          <% end %>
+        </p>
+    <% end %>
+
+    <p>
+      Click&nbsp;<%= link_to 'here', job_interests_url %> to go see List of Active Job Postings.
+    </p>
+
+<% else %>
+    <p>No Jobs Available at this time.</p>
+<% end %>

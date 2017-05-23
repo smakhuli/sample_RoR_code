@@ -1,0 +1,37 @@
+new.html.erb<% title @job_registration.job_posting.title %>
+
+<div class="block training-registration">
+  <div class="g center">
+    <div class="u50">
+
+      <h1 class="center">Congratulations!</h1>
+
+      <% if current_user.is_bethel_staff? %>
+        <p class="center dim bottom-margin">You have successfully completed the <strong><%= @job_registration.job_posting.title %></strong> job posting to run for <strong><%= @job_registration.number_of_months %></strong> starting on <%= @job_registration.start_date.strftime("%B %e, %Y") %> through <%= @job_registration.end_date.strftime("%B %e, %Y") %>.</p>
+      <% else %>
+        <p class="center dim bottom-margin">You have successfully paid for the <strong><%= @job_registration.job_posting.title %></strong> job posting to run for <strong><%= @job_registration.number_of_months %></strong> starting on <%= @job_registration.start_date.strftime("%B %e, %Y") %> through <%= @job_registration.end_date.strftime("%B %e, %Y") %>.</p>
+      <% end %>
+
+      <% unless current_user.is_bethel_staff? %>
+        <div class="add-button-and-price field card pad gray">
+          <div class="input">
+            <h3>Total paid:</h3>
+            <p>
+              <% if @job_registration.account.transactions.last %>
+                <%= @job_registration.account.transactions.last.description %>:&nbsp;&nbsp;<%= @job_registration.account.transactions.last.payment_details %>
+              <% end %>
+            </p>
+          </div>
+          <div class="price total">
+            <%= @job_registration.account.transactions.last ? @job_registration.account.transactions.last.amount.abs.to_currency : "0" %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="actions">
+        <%= link_to 'Finish', job_postings_path, :class => 'btn info' %>
+      </div>
+
+    </div>
+  </div>
+</div>

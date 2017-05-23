@@ -1,0 +1,8 @@
+<li class="u price-card">
+<%= link_to new_job_posting_path(job_fee_id: jobfee.id), class: "radio" do %>
+  <label class="collection_radio_buttons" for="job_registration_job_fee_id_1">
+  	<span class="price"><%= jobfee.fee.to_currency %></span><%= pluralize(jobfee.number_of_months, 'month' ) %>
+  </label>
+  <button class="btn outline green">Select</button>
+ <% end %>
+</li>

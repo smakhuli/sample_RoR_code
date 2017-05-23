@@ -1,0 +1,50 @@
+<% title "Job Postings" %>
+<% selected_nav "jobs" %>
+<% @colored_nav = "post" %>
+
+<%= render partial: "tabs", locals: { active_tab: "post_a_job" } %>
+
+<section class="job-listing">
+  <div class="hero m-hide" style="background: url(<%= asset_path("jobs-bkg-postjob.jpg") %>); background-position: center center;">
+    <%= image_tag("GL-Jobs.png", class: "center") %>
+    Find your next employee.
+  </div>
+</section>
+
+<section class="section lightergray">
+  <div class="block">
+    <!-- <h2 class="center">Discover Your Next Employee</h2> -->
+    <div class="g3 center">
+      <div class="u tidbit">
+        <h3>Post Your Job Openings</h3>
+        <p>Share your company's job opportunities with our one-of-a-kind community of revivalists.</p>
+      </div>
+      <div class="u tidbit">
+        <h3 class="m-toppad">Access Applicant Training History</h3>
+        <p>Check applicant profiles for involvement in Bethel School of Supernatural Ministry and GL training.</p>
+      </div>
+      <div class="u tidbit">
+        <h3 class="m-toppad">Fill Your Position with Ease</h3>
+        <p>You have the power to view and communicate with potential employees.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="block" style="padding: 5em 1.25em;">
+
+  <% if !user_signed_in?  || (can? :create, JobPosting) %>
+
+    <div class="price-cards">
+      <h3 class="center">Select a posting length</h3>
+
+      <ul class="g<%= JobFee.all.count %>">
+        <% JobFee.all.each do |jobfee| %>
+          <%= render partial: "job_fees", locals: { jobfee: jobfee } %>
+        <% end %>
+      </ul>
+    </div>
+
+  <% end %>
+
+</div>

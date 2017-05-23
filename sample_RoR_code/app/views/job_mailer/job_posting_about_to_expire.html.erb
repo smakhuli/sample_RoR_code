@@ -1,0 +1,9 @@
+<span class="h2" style="color: #333333;display: block;font-family: Arial;font-size: 30px;font-weight: normal;line-height: 100%;margin-bottom: 10px;text-align: left;">
+	Dear <%= @user.firstname %>,
+</span>
+
+<p>Your <strong><%= @job_posting.title %></strong> job posting will expire on <strong><%= @job_posting.job_registration.end_date.strftime("%B %e, %Y") %></strong>.</p>
+
+<p>&nbsp;</p>
+<p>Blessings,<br />
+  <em>The Global Legacy Team</em></p>

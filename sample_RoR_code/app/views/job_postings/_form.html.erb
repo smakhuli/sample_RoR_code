@@ -1,0 +1,58 @@
+<%= content_for(:head) do %>
+    <%= javascript_include_tag "redactor" %>
+    <%= stylesheet_link_tag "redactor" %>   
+<% end %>
+
+<%= simple_form_for([@job_posting], html: { id: "job_posting_form" }) do |f| %>
+    <%= render "errors/list", object: f.object %>
+
+    <% if params[:duplicated].present? %>
+        <div class="highlight center">
+          <p style="padding-bottom: 10px;"><strong>Please review information below and make any necessary updates.</strong></p>
+        </div>
+    <% end %>
+
+    <fieldset>
+        <%= f.hidden_field :employer_id, value: current_user.id %>
+        <% if @job_fee %>
+          <%= f.hidden_field :job_fee_id, value: @job_fee.id %>
+        <% end %>
+        <%= f.input :title, label: 'Position Title' %>
+        <%= f.input :job_location, label: 'Job Location', hint: "Example: 'Sacramento, CA' or 'London, UK'" %>
+        <%= f.association :job_spheres, collection: @job_spheres, label: "Job Categories", :input_html => { :class => 'cselect' } %>
+    </fieldset>
+
+    <fieldset class="divided">
+        <%= f.input :church_name, label: 'Organization/Church Name' %>
+        <%= f.input :church_url, label: 'Organization/Church Web Site', hint: 'Please enter http:// or https:// before the web site name' %>
+    </fieldset>
+
+    <fieldset class="divided">
+        <div class="g">
+            <div class="u50">
+                <%= f.input :job_type, collection: ["Full-time","Part-time"], Label: 'Job Type', :input_html => { :class => 'cselect-narrow2' } %>
+            </div>
+            <div class="u50">
+                <%= f.input :hours_per_week, label: 'Hours Per Week' %>
+            </div>
+            <div class="u100">
+                <%= f.input :reports_to, label: 'Reports To' %>
+            </div>
+        </div>
+    </fieldset>
+        
+    <fieldset class="divided">
+        <%= f.input :job_description, label: 'Job Description', input_html: { class: "redactor" } %>
+        <%= f.input :job_requirements, label: 'Job Requirements', input_html: { class: "redactor" } %>
+        <%= f.input :job_nice_to_haves, label: 'Highly Desired Qualifications', input_html: { class: "redactor" } %>
+    </fieldset>
+    
+
+    <div class="g actions">
+        <div class="u100">
+        <%= link_to 'Cancel', job_postings_path, class: 'btn outline pull-left' %>
+        <%= f.button :submit, 'Save', class: "add pull-right" %>
+        </div>
+    </div>
+
+<% end %>

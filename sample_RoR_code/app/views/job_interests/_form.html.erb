@@ -1,0 +1,28 @@
+<%= content_for(:head) do %>
+    <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+    <%= javascript_include_tag "redactor" %>
+    <%= stylesheet_link_tag "redactor" %>
+<% end %>
+
+<%= simple_form_for(@job_interest, html: { id: "job_interest_form" }) do |f| %>
+    <%= render "errors/list", object: f.object %>
+
+    <%= f.hidden_field :applicant_id, value: current_user.id %>
+    <%= f.hidden_field :job_posting_id, value: @job_posting_id %>
+    <% name_value = @job_interest.get_name_value(current_user) %>
+    <%= f.input :name, :input_html => { value: name_value } %>
+    <% phone_value = @job_interest.get_phone_value(current_user) %>
+    <%= f.input :phone_number, :input_html => { value: phone_value } %>
+    <% email_value = @job_interest.get_email_value(current_user) %>
+    <%= f.input :email, :input_html => { value: email_value } %>
+    <%= f.input :why_me, label: 'My Qualifications', input_html: { class: "redactor" } %>
+    <%= f.input :start_date, label: "Start Date", as: :string, input_html: { autocomplete: "off", value: (@job_interest.start_date.blank? ? '' : @job_interest.start_date.strftime("%-d %B %Y")) } %>
+
+    <div class="g actions">
+      <div class="u100">
+        <%= link_to 'Back', job_interests_path, class: 'btn outline' %>
+        <%= f.button :submit, 'Save & Continue', class: "add pull-right" %>
+      </div>
+    </div>
+<% end %>

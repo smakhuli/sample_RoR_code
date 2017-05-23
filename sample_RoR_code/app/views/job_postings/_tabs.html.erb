@@ -1,0 +1,24 @@
+<div class="section tabs tabs1-wrap job-tabs">
+  <div class="block nopad">
+    <a href="#" class="selected-tab">Select Page</a>
+    <ul class="tabs tabs1">
+
+      <li class="<%= @colored_nav =="find" ? "find" : "" %> <%= active_tab =="find_a_job" ? "active" : "" %>">
+        <%= link_to "Find a Job", job_interests_path %>
+      </li>
+
+      <li class="<%= @colored_nav =="post" ? "post" : "" %> <%= active_tab =="post_a_job" ? "active" : "" %>">
+        <%= link_to "Post a Job", job_postings_path(job_posting: 'post a job') %>
+      </li>
+
+      <% if user_signed_in? %>
+        <% if JobPosting.my_job_postings(current_user.id).count > 0 %>
+          <li class="<%= active_tab =="my_postings" ? "active" : "" %>">
+            <%= link_to "My Job Postings", job_postings_path(job_posting: 'my job postings') %>
+          </li>
+        <% end %>
+      <% end %>
+
+    </ul>
+  </div>
+</div>
