@@ -15,7 +15,7 @@ The Job Matching feature allows users
 who expressed interest in their job postings.
 - who are looking for a job to view open job postings, search for job postings using various criteria, express interest in one or
 more job postings and provide information to the potential employer
-- with a role of admin to access financial and statistical reporting as well as limited editing capability of job postings
+- with a role of admin to access financial and statistical reporting
 
 This feature also includes:
 - scheduled rake tasks that notified users when their job postings were a week away from expiring and a second notification when
