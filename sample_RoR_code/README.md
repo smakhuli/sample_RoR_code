@@ -5,6 +5,7 @@ Even though it is not a Ruby on Rails (RoR) project, I have structured the folde
 the following types of files:
 
 Models
+
 Views (both user and admin)
 Controllers (both user and admin)
 Mailers
